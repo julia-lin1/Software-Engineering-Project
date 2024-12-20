@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Upload a File</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="title" class="form-label">File Title</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" rows="4" class="form-control" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="keywords" class="form-label">Keywords (comma-separated)</label>
+            <input type="text" id="keywords" name="keywords" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="file" class="form-label">Select File</label>
+            <input type="file" id="file" name="file" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Upload</button>
+    </form>
+    <a href="{% url 'projects:project_detail' project.id %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

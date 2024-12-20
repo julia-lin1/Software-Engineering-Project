@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="mb-4">Create a New Project</h1>
+
+{% if is_admin %}
+<p>PMA Admins cannot create projects.</p>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.as_p }}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endif %}
+<a href="{% url 'projects:project_list' %}" class="btn btn-secondary">Go to List of Projects </a>
+{% endblock %}

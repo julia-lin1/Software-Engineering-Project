@@ -1,0 +1,40 @@
+/***************************************************************************************
+*  REFERENCES - there are also references throughout the code these are more general
+***************************************************************************************/
+
+Title: Amazon S3 code examples in Python
+
+URL: https://docs.aws.amazon.com/code-library/latest/ug/python_3_s3_code_examples.html
+
+Software License: Amazon Software License
+
+***************************************************************************************/
+Title: Writing your first Django Project
+
+Url: https://docs.djangoproject.com/en/5.1/intro/tutorial01/
+
+Software License: BSD License
+***************************************************************************************/
+
+Title: Google Sign-In for Websites
+
+URL: https://developers.google.com/identity/sign-in/web/sign-in
+Software License: Apache License 2.0
+***************************************************************************************/
+Title: django-bootstrap-v5 
+
+URL: https://django-bootstrap-v5.readthedocs.io/en/latest/index.html
+
+
+Software License: MIT License
+
+***************************************************************************************/
+
+Title: Migrations | Django documentation
+
+URL: https://docs.djangoproject.com/en/5.1/topics/migrations/
+
+Software License: BSD License
+
+
+***************************************************************************************/

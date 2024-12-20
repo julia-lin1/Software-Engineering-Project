@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ issue.title }}</h1>
+    <p><strong>Date Created:</strong> {{ issue.created_date|date:"F j, Y" }}</p>
+    <p><strong>Assigned To:</strong> {{ issue.assigned_to }}</p>
+    <p><strong>Description:</strong> {{ issue.description }}</p>
+    <p><strong>Status:</strong> {{ issue.get_status_display }}</p>
+    
+    {% if issue.status == 'open' %}
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="mark_complete" class="btn btn-success">Mark as Complete</button>
+        </form>
+    {% else %}
+        <p><strong>Issue Status:</strong> Completed</p>
+    {% endif %}
+<h2>Comments</h2>
+    <ul>
+        {% for comment in comments %}
+            <li><strong>{{ comment.user.username }}</strong> ({{ comment.created_date|date:"F j, Y, H:i" }}): {{ comment.text }}</li>
+        {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </ul>
+
+    <h3>Add a Comment</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <button type="submit" name="add_comment" class="btn btn-primary">Add Comment</button>
+    </form>
+    <a href="{% url 'projects:project_detail' project.id %}" class="btn btn-secondary">Back</a>
+</div>
+{% endblock %}

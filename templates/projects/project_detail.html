@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ project.name }}</h1>
+
+    <!-- Project Owner Visible to Everyone -->
+    <p><strong>Owner:</strong> {{ project.owner }} ({{ project.owner.email }})</p>
+
+    <!-- Project Description Visible to Everyone -->
+    <p><strong>Description:</strong> {{ project.description }}</p>
+
+    <!-- For Authenticated Users -->
+    {% if user.is_authenticated %}
+        <!-- For Owners and Members -->
+        {% if is_member or is_owner or is_admin or is_manager%}
+            <h2>Project Calendar</h2>
+            <a href="{% url 'projects:project_calendar' project.id %}" class="btn btn-primary mb-3">View Calendar</a>
+
+            <h3>Project Progress</h3>
+            <div class="d-flex align-items-center mb-3">
+                <div class="progress flex-grow-1">
+                    <div class="progress-bar {% if progress == 100 %}bg-success{% endif %}" role="progressbar" 
+                         style="width: {{ progress }}%;" 
+                         aria-valuenow="{{ progress }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                        {% if progress > 0 %}{{ progress|floatformat:1 }}%{% else %}0%{% endif %}
+                    </div>
+                </div>
+                <span class="ms-3">{{ completed_issues.count }}/{{ total_issues }}</span>
+            </div>
+
+            <!-- File Upload and Deletion -->
+            <h2>Manage Project Files</h2>
+            <a href="{% url 'projects:upload_file' project.id %}" class="btn btn-success mb-3">Upload File</a>
+            <a href="{% url 'projects:view_files' project.id %}" class="btn btn-info">View Files</a>
+
+            <!-- Display an alert for non-members trying to access file management -->
+            {% if not is_member or not is_manager %}
+                <p class="alert alert-warning">You must be a member of this project to manage files.</p>
+            {% endif %}
+
+            <h2>Accepted Members</h2>
+            <ul>
+                {% for member in accepted_members %}
+                    <li>{{ member.username }} ({{ member.email }})</li>
+                {% empty %}
+                    <li>No accepted members for this project yet.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Open Issues</h2>
+            <ul>
+                {% for issue in open_issues %}
+                    <li>
+                        <a href="{% url 'projects:issue_detail' project.id issue.id %}">{{ issue.title }}</a> - {{ issue.description }}
+                        (Created on: {{ issue.created_date|date:"F j, Y" }}) - Assigned to: {{ issue.assigned_to }}
+                    </li>
+                {% empty %}
+                    <li>No open issues for this project.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Completed Issues</h2>
+            <ul>
+                {% for issue in completed_issues %}
+                    <li>
+                        {{ issue.title }} - {{ issue.description }}
+                        (Completed on: {{ issue.created_date|date:"F j, Y" }}) - Assigned to: {{ issue.assigned_to }}
+                    </li>
+                {% empty %}
+                    <li>No completed issues for this project.</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Add Issue Button -->
+            <a href="{% url 'projects:add_issue' project.id %}" class="btn btn-primary">Add Issue</a>
+
+            <!-- Join Requests for Owners -->
+            {% if is_owner %}
+            <h2>Join Requests</h2>
+            <ul>
+                {% for request in project.join_requests.all %}
+                <li>
+                    {{ request.user.username }} -
+                    <a href="{% url 'projects:approve_join_request' project.id request.user.id %}">Approve</a> |
+                    <a href="{% url 'projects:deny_join_request' project.id request.user.id %}">Deny</a>
+                </li>
+                {% empty %}
+                <p>No join requests pending.</p>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endif %}
+
+        <!-- Project Deletion for Owners -->
+        {% if is_owner or is_admin or is_manager%}
+        <form action="{% url 'projects:delete_project' project.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete Project</button>
+        </form>
+        {% endif %}
+
+        <!-- Request to Join for Non-Members -->
+        {% if not is_member and not is_owner and not is_admin and not is_manager%}
+        <a href="{% url 'projects:request_join' project.id %}" class="btn btn-secondary">Request to Join</a>
+        {% endif %}
+        
+        {% if is_member %}
+        <form action="{% url 'projects:leave_project' project.id %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Leave Project</button>
+        </form>
+        {% endif %}
+    {% endif %}
+    <a href="{% url 'projects:project_list' %}" class="btn btn-success mb-3">Go to List of Projects</a>
+</div>
+{% endblock %}
